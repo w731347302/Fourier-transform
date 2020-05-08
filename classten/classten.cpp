@@ -281,7 +281,7 @@ int ifftDemo(Mat src, Mat &dspMat, Mat mask)
 
 int main()
 {
-	Mat src = imread("test1.jpg",0);
+	Mat src = imread("test1.png",0);
 	Mat src1 = imread("test2.jpg", 0);
 	resize(src, src, Size(400, 600));
 	resize(src1, src1, Size(400, 600));
@@ -297,14 +297,15 @@ int main()
 	//dftDemo(src);
 	Mat ga_src;
 	src.convertTo(ga_src,CV_32FC1);
-	Mat mask = gaussianlbrf(ga_src, 45);
-	ifftDemo(src, dspMat);
+	Mat mask = gaussianlbrf(ga_src, 30);
+	ifftDemo(src, dspMat,mask);
 	ifftDemo(src1, dspMat1);
 	imwrite("去除高频后的张国荣.jpg", dspMat);
 	imwrite("去除低频后的普朗克.jpg", dspMat1);
 	Mat res;
 	addWeighted(dspMat, 0.5, dspMat1, 0.5,-1,res);
 	imshow("res", res);
+	imwrite("合成图.jpg", res);
 	waitKey(0);
 	return 0;
 }
