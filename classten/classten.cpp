@@ -104,7 +104,7 @@ int dftDemo(Mat src)
 	return 0;
 }
 
-int ifftDemo(Mat src)
+int ifftDemo(Mat src, Mat &dspMat)
 {
 	Mat dst;
 
@@ -155,7 +155,7 @@ int ifftDemo(Mat src)
 	selectPolygon(res, mask);
 	mag = mag / 255;
 	mag = mag.mul(mask);
-	proceMag = mag;
+	proceMag = mag*255;
 	imwrite("处理后频谱.jpg", proceMag);
 	Mat q00(mag, Rect(0, 0, cx, cy));
 	Mat q10(mag, Rect(cx, 0, cx, cy));
@@ -178,7 +178,6 @@ int ifftDemo(Mat src)
 	Rect rect(0, 0, src.cols, src.rows);
 	dst = ifft(rect);
 	dst = dst * 255;
-	cv::Mat dspMat;
 	dst.convertTo(dspMat, CV_8UC1);
 	imshow("dst", dspMat);
 	imshow("src", src);
@@ -189,7 +188,10 @@ int ifftDemo(Mat src)
 int main()
 {
 	Mat src = imread("test1.jpg",0);
+	Mat src1 = imread("test2.jpg", 0);
 	resize(src, src, Size(400, 600));
+	resize(src1, src1, Size(400, 600));
+	Mat dspMat, dspMat1;
 	//Mat dst, dstMat;
 	//selectPolygon(src, dst);
 	//dst = dst * 255;
@@ -199,7 +201,13 @@ int main()
 	//waitKey(0);
 
 	//dftDemo(src);
-	ifftDemo(src);
-
+	ifftDemo(src, dspMat);
+	ifftDemo(src1, dspMat1);
+	imwrite("去除频率后的普朗克.jpg", dspMat);
+	imwrite("去除频率后的刘德华.jpg", dspMat1);
+	Mat res;
+	addWeighted(dspMat, 0.5, dspMat1, 0.5,-1,res);
+	imshow("res", res);
+	waitKey(0);
 	return 0;
 }
